@@ -23,6 +23,20 @@ class CRM_Pwppb_Util_Setting {
     return json_decode($settingJson, TRUE);
   }
 
+  /**
+   * Throw an exeption if settings data will be too long.
+   *
+   * @param string $settingsJson
+   * @throws CRM_Core_Exception
+   */
+  public static function validateSettingsLength(string $settingsJson) {
+    if (!CRM_Pwppb_Util_Db::checkVarcharValueLength($settingsJson, 'civicrm_option_value', 'value')) {
+      throw new CRM_Core_Exception(
+        "Pwppb: The given settings are too long to be saved. (Hint: Try a shorter value for \"Status message after WP user creation\"?)"
+      );
+    }
+  }
+
   public static function saveAllUFGRoupSettings($ufGroupId, $settings) {
 
     $settingName = "ufgroup_settings_{$ufGroupId}";
@@ -35,14 +49,16 @@ class CRM_Pwppb_Util_Setting {
       ->execute()
       ->first();
     
-
+    $settingsJson = json_encode($settings + ['uf_group_id' => $ufGroupId]);
+    self::validateSettingsLength($settingsJson);
+  
     $save = OptionValue::save(FALSE)
       ->addRecord([
         'id' => $result['id'] ?? NULL,
         'name' => $settingName,
         'label' => 'Settings for UFGroup ' . $ufGroupId,
         'option_group_id:name' => 'OptionGroup_pwppb_settings',
-        'value' => json_encode($settings + ['uf_group_id' => $ufGroupId]),
+        'value' => $settingsJson,
       ]);
 
     try {

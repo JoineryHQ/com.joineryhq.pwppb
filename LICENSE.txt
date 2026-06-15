@@ -1,5 +1,5 @@
 Package: com.joineryhq.pwppb
-Copyright (C) 2026, FIXME <FIXME>
+Copyright (C) 2026, Allen Shaw <allen@joineryhq.com>
 Licensed under GNU General Public License v3.0 only (below).
 
 -------------------------------------------------------------------------------
