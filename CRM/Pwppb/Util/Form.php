@@ -187,6 +187,8 @@ class CRM_Pwppb_Util_Form {
       wppb_signup_user($userName, $userEmail, NULL, $wppbMeta);
 
       // Determine a user message (from settings), if any.
+      // fixme: I believe this setting is not needed, as 'redirect on submit' can 
+      // take the user to a page that says anything we want.
       $userMessage = ($formSettings['pwppb_msg'] ?? NULL);
       if ($userMessage) {
         CRM_Core_Session::setStatus($userMessage, E::ts('Needs confirmation'));
